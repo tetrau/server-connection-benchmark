@@ -1,0 +1,98 @@
+[
+  {
+    "vendor": "vultr",
+    "ping": "fra-de-ping.vultr.com",
+    "location": "Frankfurt, DE",
+    "download": "https://fra-de-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "ams-nl-ping.vultr.com",
+    "location": "Amsterdam, NL",
+    "download": "https://ams-nl-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "par-fr-ping.vultr.com",
+    "location": "Paris, France",
+    "download": "https://par-fr-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "lon-gb-ping.vultr.com",
+    "location": "London, UK",
+    "download": "https://lon-gb-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "sgp-ping.vultr.com",
+    "location": "Singapore",
+    "download": "https://sgp-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "hnd-jp-ping.vultr.com",
+    "location": "Tokyo, Japan",
+    "download": "https://hnd-jp-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "nj-us-ping.vultr.com",
+    "location": "New York (NJ)",
+    "download": "https://nj-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "tor-ca-ping.vultr.com",
+    "location": "Toronto, Canada",
+    "download": "https://tor-ca-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "il-us-ping.vultr.com",
+    "location": "Chicago, Illinois",
+    "download": "https://il-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "ga-us-ping.vultr.com",
+    "location": "Atlanta, Georgia",
+    "download": "https://ga-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "fl-us-ping.vultr.com",
+    "location": "Miami, Florida",
+    "download": "https://fl-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "wa-us-ping.vultr.com",
+    "location": "Seattle, Washington",
+    "download": "https://wa-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "tx-us-ping.vultr.com",
+    "location": "Dallas, Texas",
+    "download": "https://tx-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "sjo-ca-us-ping.vultr.com",
+    "location": "Silicon Valley, California",
+    "download": "https://sjo-ca-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "lax-ca-us-ping.vultr.com",
+    "location": "Los Angeles, California",
+    "download": "https://lax-ca-us-ping.vultr.com/vultr.com.100MB.bin"
+  },
+  {
+    "vendor": "vultr",
+    "ping": "syd-au-ping.vultr.com",
+    "location": "Sydney, Australia",
+    "download": "https://syd-au-ping.vultr.com/vultr.com.100MB.bin"
+  }
+]

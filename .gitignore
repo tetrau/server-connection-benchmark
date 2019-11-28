@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+dist
+scb_js/dist
+scb_js/node_modules
+scb_js/package-lock.json
+local_file
+
+.idea
+.DS_Store

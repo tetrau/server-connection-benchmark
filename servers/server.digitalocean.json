@@ -1,0 +1,74 @@
+[
+  {
+    "vendor": "digitalocean",
+    "location": "NYC1",
+    "download": "http://speedtest-nyc1.digitalocean.com/100mb.test",
+    "ping": "speedtest-nyc1.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "NYC2",
+    "download": "http://speedtest-nyc2.digitalocean.com/100mb.test",
+    "ping": "speedtest-nyc2.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "NYC3",
+    "download": "http://speedtest-nyc3.digitalocean.com/100mb.test",
+    "ping": "speedtest-nyc3.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "AMS2",
+    "download": "http://speedtest-ams2.digitalocean.com/100mb.test",
+    "ping": "speedtest-ams2.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "AMS3",
+    "download": "http://speedtest-ams3.digitalocean.com/100mb.test",
+    "ping": "speedtest-ams3.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "SFO1",
+    "download": "http://speedtest-sfo1.digitalocean.com/100mb.test",
+    "ping": "speedtest-sfo1.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "SFO2",
+    "download": "http://speedtest-sfo2.digitalocean.com/100mb.test",
+    "ping": "speedtest-sfo2.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "SGP1",
+    "download": "http://speedtest-sgp1.digitalocean.com/100mb.test",
+    "ping": "speedtest-sgp1.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "LON1",
+    "download": "http://speedtest-lon1.digitalocean.com/100mb.test",
+    "ping": "speedtest-lon1.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "FRA1",
+    "download": "http://speedtest-fra1.digitalocean.com/100mb.test",
+    "ping": "speedtest-fra1.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "TOR1",
+    "download": "http://speedtest-tor1.digitalocean.com/100mb.test",
+    "ping": "speedtest-tor1.digitalocean.com"
+  },
+  {
+    "vendor": "digitalocean",
+    "location": "BLR1",
+    "download": "http://speedtest-blr1.digitalocean.com/100mb.test",
+    "ping": "speedtest-blr1.digitalocean.com"
+  }
+]
