@@ -10,7 +10,7 @@ import render
 def get_args():
     parser = argparse.ArgumentParser()
     required = parser.add_argument_group('required arguments')
-    required.add_argument("-o", "--output", required=True,
+    required.add_argument("-o", "--output",
                           help="Output file path, use a single hyphen for "
                                "stdout.")
     parser.add_argument("-s", "--servers",
@@ -56,15 +56,17 @@ def get_args():
                              "already received to calculate the bandwidth.")
     parser.add_argument("--json", required=False, action="store_true",
                         help="Change the report output format to JSON.")
+    parser.add_argument("-v", "--version", required=False, action="store_true",
+                        help="Show the version number")
 
-    return parser.parse_args()
+    return parser, parser.parse_args()
 
 
 def command_line_interface():
     def check_argument(name, message):
         a = getattr(arguments, name)
         if a is None:
-            raise ValueError(message)
+            parser.error(message)
         else:
             return a
 
@@ -113,8 +115,12 @@ def command_line_interface():
         else:
             return None
 
-    arguments = get_args()
-    output = arguments.output
+    parser, arguments = get_args()
+    if arguments.version:
+        print(scb.__version__)
+        exit()
+    output = check_argument("output", "the following arguments are required: "
+                                      "-o/--output")
     if arguments.render:
         input = check_argument("input", "input (-i INPUT) argument "
                                         "must be set for --render-json option")

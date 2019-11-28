@@ -4,6 +4,8 @@ import time
 import functools
 import datetime
 
+__version__ = "0.0.1"
+
 
 def ping_test(host, count):
     p = subprocess.Popen(["ping", "-q", "-c", str(count), host],
