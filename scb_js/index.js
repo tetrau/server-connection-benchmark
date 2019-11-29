@@ -179,36 +179,36 @@ function createControlPanel(drawPlot) {
     let selectors = ["bandwidth", "latency", "invertedLatency", "packetLoss"];
     let controlPanel = d3.select("div#control-panel-1");
     function createInput(message, className, select, candidates) {
-        controlPanel.append("p").text(message).style("font-family", "sans-serif");
+        let controlPanelDiv = controlPanel.append("div");
+        controlPanelDiv.append("label")
+        .attr("for", className)
+        .text(message)
+        .style("font-family", "sans-serif");
+        let controlPanelSelect = controlPanelDiv.append("select").attr("id", className);
         for (let s of candidates) {
-            let i = controlPanel.append("input")
-                .attr("type", "radio")
+            let i = controlPanelSelect.append("option")
                 .attr("name", className)
                 .attr("class", className)
                 .attr("id", className + "-" + s)
                 .attr("value", s)
-                .on("change", drawPlot)
-            if (s === select) {
-                i.property('checked', true);
-            }
-            controlPanel.append("label")
-                .attr("for", className + "-" + s)
                 .style("font-family", "sans-serif")
-                .style("margin-right", "8px")
                 .text(s)
-
+            if (s === select) {
+                i.property('selected', true);
+            }
         }
+        controlPanelSelect.on("change", drawPlot)
     }
 
-    createInput("Select Primary Value Field (Visualized by the Height of Bar):", "primaryDataSelector", "bandwidth", selectors)
-    createInput("Select Secondary Value Field (Visualized by the Color of Bar):", "secondaryDataSelector", "invertedLatency", selectors)
-    createInput("Select Accumulating Function", "accumulator", "average", ["average", "max", "min"])
+    createInput("Select Primary Value Field (Visualized by the Height of Bar): ", "primaryDataSelector", "bandwidth", selectors)
+    createInput("Select Secondary Value Field (Visualized by the Color of Bar): ", "secondaryDataSelector", "invertedLatency", selectors)
+    createInput("Select Accumulating Function: ", "accumulator", "average", ["average", "max", "min"])
 }
 
 function getConfigFromControlPanel() {
-    let primaryDataSelector = d3.select("input.primaryDataSelector:checked").property("value");
-    let secondaryDataSelector = d3.select("input.secondaryDataSelector:checked").property("value");
-    let accumulator = d3.select("input.accumulator:checked").property("value");
+    let primaryDataSelector = d3.select("option.primaryDataSelector:checked").property("value");
+    let secondaryDataSelector = d3.select("option.secondaryDataSelector:checked").property("value");
+    let accumulator = d3.select("option.accumulator:checked").property("value");
     return { primaryDataSelector, secondaryDataSelector, accumulator }
 }
 
