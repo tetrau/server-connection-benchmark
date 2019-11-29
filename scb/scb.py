@@ -3,24 +3,33 @@ import re
 import time
 import functools
 import datetime
+import shutil
+import platform
+import downloader
 
 __version__ = "0.0.1"
 
 
 def ping_test(host, count):
-    p = subprocess.Popen(["ping", "-q", "-c", str(count), host],
-                         stdout=subprocess.PIPE)
+    is_windows = platform.system() == "Windows"
+    cmd = ["ping", "-n", str(count), host] \
+        if is_windows else ["ping", "-q", "-c", str(count), host]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     return p
 
 
 def parse_ping_test_result(p):
+    is_windows = platform.system() == "Windows"
+    tx_rx_pattern = "Packets: Sent = (\d+), Received = (\d+)," if is_windows \
+        else "(\d+) .*transmitted, (\d+) .*received"
+    latency_pattern = "Minimum = \d+ms, Maximum = \d+ms, Average = (\d+)ms" \
+        if is_windows else "min/avg/max/.+ = [\d.]+/[\d.]+/([\d.]+)/[\d.]+ ms"
+
     r = p.stdout.read().decode()
     try:
-        transmitted_received = re.findall("(\d+) .*transmitted, "
-                                          "(\d+) .*received", r)
+        transmitted_received = re.findall(tx_rx_pattern, r)
         transmitted, received = transmitted_received[0]
-        latency = re.findall("min/avg/max/.+"
-                             " = [\d.]+/[\d.]+/([\d.]+)/[\d.]+ ms", r)
+        latency = re.findall(latency_pattern, r)
         latency = latency[0]
     except IndexError:
         raise ValueError("Unsupported ping output:\n{}".format(r))
@@ -39,6 +48,9 @@ def join_popen(ps):
 
 
 def bandwidth_test(url, timeout):
+    if shutil.which("curl") is None:
+        return downloader.py_bandwidth_test(url, timeout)
+
     start = time.time()
     p = subprocess.Popen(["curl", url],
                          stdout=subprocess.PIPE,
