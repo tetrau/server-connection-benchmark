@@ -113,7 +113,7 @@ function accumulatorFactory(accu) {
 function draw4DPlot(xDomain, yDomain, data, primaryDataSelector, secondaryDataSelector, xSelector, ySelector) {
     let scaleX = d3.scaleBand(xDomain, [0, 780])
         .paddingInner(0.1);
-    if (scaleX.bandwidth() > 20){
+    if (scaleX.bandwidth() > 20) {
         scaleX = scaleYFactory(20, 0.9, xDomain);
     }
     let scaleY = scaleYFactory(scaleX.bandwidth() * 2.25, 0.9, yDomain);
@@ -135,14 +135,6 @@ function normalizedSelector(dataArray, selector) {
     return f;
 }
 
-function invertedNormalizedSelector(dataArray, selector) {
-    let maxValue = maxInArray(dataArray, selector);
-    let scale = d3.scaleLinear().domain([maxValue, 0]);
-    let f = x => scale(selector(x))
-    f.scale = scale
-    return f
-}
-
 function draw(rData) {
     let config = getConfigFromControlPanel();
     let accumulators = {
@@ -159,11 +151,9 @@ function draw(rData) {
     let latencySelector = normalizedSelector(data, x => x.latency);
     let packetLossSelector = x => x.packetLoss;
     packetLossSelector.scale = d3.scaleLinear();
-    let invertedLantencySelector = invertedNormalizedSelector(data, x => x.latency);
     let selectors = {
         bandwidth: bandwidthSelector,
         latency: latencySelector,
-        invertedLatency: invertedLantencySelector,
         packetLoss: packetLossSelector
     }
     let primaryDataSelector = selectors[config.primaryDataSelector];
@@ -176,14 +166,14 @@ function draw(rData) {
 }
 
 function createControlPanel(drawPlot) {
-    let selectors = ["bandwidth", "latency", "invertedLatency", "packetLoss"];
+    let selectors = ["bandwidth", "latency", "packetLoss"];
     let controlPanel = d3.select("div#control-panel-1");
     function createInput(message, className, select, candidates) {
         let controlPanelDiv = controlPanel.append("div");
         controlPanelDiv.append("label")
-        .attr("for", className)
-        .text(message)
-        .style("font-family", "sans-serif");
+            .attr("for", className)
+            .text(message)
+            .style("font-family", "sans-serif");
         let controlPanelSelect = controlPanelDiv.append("select").attr("id", className);
         for (let s of candidates) {
             let i = controlPanelSelect.append("option")
@@ -201,7 +191,7 @@ function createControlPanel(drawPlot) {
     }
 
     createInput("Select Primary Value Field (Visualized by the Height of Bar): ", "primaryDataSelector", "bandwidth", selectors)
-    createInput("Select Secondary Value Field (Visualized by the Color of Bar): ", "secondaryDataSelector", "invertedLatency", selectors)
+    createInput("Select Secondary Value Field (Visualized by the Color of Bar): ", "secondaryDataSelector", "latency", selectors)
     createInput("Select Accumulating Function: ", "accumulator", "average", ["average", "max", "min"])
 }
 
