@@ -161,7 +161,13 @@ function draw(rData) {
     let timeSelector = x => formatTime(x.time);
     let nameSelector = x => x.vendor + ": " + x.location
     let scale = secondaryDataSelector.scale;
-    drawLegendAxis(scale, 980, 50);
+    let tickFormats = {
+        bandwidth: (d) => (d3.format(".3~s")(d).toLowerCase() + "bps").replace(/([\d.]+)(\D*)/, "$1 $2"),
+        latency: (d) => d3.format("d")(d) + " ms",
+        packetLoss: d3.format(".0%")
+    }
+    let tickFormat = tickFormats[config.secondaryDataSelector];
+    drawLegendAxis(scale, 980, 50, tickFormat);
     draw4DPlot(xDomain, yDomain, data, primaryDataSelector, secondaryDataSelector, timeSelector, nameSelector)
 }
 
@@ -232,14 +238,15 @@ function drawLegend(x, y, width, height) {
         .style('fill', 'url(#gradient)');
 }
 
-function drawLegendAxis(scale, x, y) {
+function drawLegendAxis(scale, x, y, tickFormat) {
     scale = scale.copy().range([199, 0])
     d3.selectAll("g.legend-axis").remove()
     d3.select("svg")
         .append("g")
         .attr("class", "legend-axis")
         .attr("transform", `translate(${x}, ${y})`)
-        .call(d3.axisRight(scale))
+        .call(d3.axisRight(scale).tickFormat(tickFormat))
+
 }
 
 
