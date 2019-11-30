@@ -83,22 +83,22 @@ function groupBy(array, key) {
     return o;
 }
 
-function parseReport(report, accumulator) {
+function parseReport(report, aggregate) {
     let nameArray = report[0].result.map(x => x.vendor + ": " + x.location);
     let result = report.flatMap(s => {
         return s.result.map(x => { return { ...x, time: s.time } })
     })
     let groupedResult = groupBy(result, r => JSON.stringify([r.vendor, r.location, formatTime(r.time)]))
-    let accumulatedResult = Object.values(groupedResult).map(accumulator);
-    let timeArray = Array.from(new Set(accumulatedResult.map(r => formatTime(r.time)))).sort();
+    let aggregatedResult = Object.values(groupedResult).map(aggregate);
+    let timeArray = Array.from(new Set(aggregatedResult.map(r => formatTime(r.time)))).sort();
     return {
-        "result": accumulatedResult,
+        "result": aggregatedResult,
         "timeArray": timeArray,
         "nameArray": nameArray
     }
 }
 
-function accumulatorFactory(accu) {
+function aggregateFactory(accu) {
     return function (reports) {
         let time = reports[0].time;
         let vendor = reports[0].vendor;
@@ -137,13 +137,13 @@ function normalizedSelector(dataArray, selector) {
 
 function draw(rData) {
     let config = getConfigFromControlPanel();
-    let accumulators = {
-        average: accumulatorFactory(d3.mean),
-        max: accumulatorFactory(d3.max),
-        min: accumulatorFactory(d3.min)
+    let aggregates = {
+        average: aggregateFactory(d3.mean),
+        max: aggregateFactory(d3.max),
+        min: aggregateFactory(d3.min)
     }
-    let accumulator = accumulators[config.accumulator]
-    let parsedData = parseReport(rData, accumulator);
+    let aggregate = aggregates[config.aggregate]
+    let parsedData = parseReport(rData, aggregate);
     let xDomain = parsedData.timeArray;
     let yDomain = parsedData.nameArray;
     let data = parsedData.result;
@@ -198,14 +198,14 @@ function createControlPanel(drawPlot) {
 
     createInput("Select Primary Value Field (Visualized by the Height of Bar): ", "primaryDataSelector", "bandwidth", selectors)
     createInput("Select Secondary Value Field (Visualized by the Color of Bar): ", "secondaryDataSelector", "latency", selectors)
-    createInput("Select Accumulating Function: ", "accumulator", "average", ["average", "max", "min"])
+    createInput("Select Aggregate Function: ", "aggregate", "average", ["average", "max", "min"])
 }
 
 function getConfigFromControlPanel() {
     let primaryDataSelector = d3.select("option.primaryDataSelector:checked").property("value");
     let secondaryDataSelector = d3.select("option.secondaryDataSelector:checked").property("value");
-    let accumulator = d3.select("option.accumulator:checked").property("value");
-    return { primaryDataSelector, secondaryDataSelector, accumulator }
+    let aggregate = d3.select("option.aggregate:checked").property("value");
+    return { primaryDataSelector, secondaryDataSelector, aggregate }
 }
 
 function drawLegend(x, y, width, height) {
