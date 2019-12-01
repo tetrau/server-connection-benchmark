@@ -43,17 +43,19 @@ def get_args():
                         help="Set the minimal interval in seconds between two "
                              "benchmark batch, highly recommend use a divisor "
                              "of 24 hours (5min, 10min, 15min, 30min, 1h, 1.5h,"
-                             " etc.)")
+                             " etc.) (default: 1800)")
     parser.add_argument("-pc", "--ping-count", type=int, default=100,
                         help="How many ping packet should be send in one ping "
-                             "test to a server.")
+                             "test to a server. (default: 100)")
     parser.add_argument("--ping-chunk", type=int, default=8,
-                        help="The maximum number of concurrent ping test.")
+                        help="The maximum number of concurrent ping test. "
+                             "(default: 8)")
     parser.add_argument("-dt", "--download-timeout", type=int, default=45,
-                        help="Specify a timeout in seconds for bandwidth test."
+                        help="Specify a timeout in seconds for bandwidth test. "
                              "If the download does not finished in timeout "
-                             "seconds, it will be terminated and use what's"
-                             "already received to calculate the bandwidth.")
+                             "seconds, it will be terminated and use what's "
+                             "already received to calculate the bandwidth. "
+                             "(default: 45)")
     parser.add_argument("--json", required=False, action="store_true",
                         help="Change the report output format to JSON.")
     parser.add_argument("-v", "--version", required=False, action="store_true",
