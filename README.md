@@ -1,4 +1,6 @@
 # server-connection-benchmark
+![screenshot](https://raw.githubusercontent.com/tetrau/server-connection-benchmark/master/doc/img/screenshot.png)
+
 server-connection-benchmark or `scb` is a server connection benchmark tool
 written in python.
 
