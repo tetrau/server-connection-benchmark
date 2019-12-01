@@ -7,7 +7,7 @@ import platform
 import threading
 import downloader
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 
 def ping_test(host, count, result_list, index):
