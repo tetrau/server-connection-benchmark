@@ -7,7 +7,7 @@ import shutil
 import platform
 import downloader
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 
 def ping_test(host, count):
