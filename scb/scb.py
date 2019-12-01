@@ -1,31 +1,30 @@
 import subprocess
 import re
 import time
-import functools
 import datetime
 import shutil
 import platform
+import threading
 import downloader
 
 __version__ = "0.0.1"
 
 
-def ping_test(host, count):
+def ping_test(host, count, result_list, index):
     is_windows = platform.system() == "Windows"
     cmd = ["ping", "-n", str(count), host] \
         if is_windows else ["ping", "-q", "-c", str(count), host]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    return p
+    result_list[index] = p.communicate()[0].decode()
 
 
-def parse_ping_test_result(p):
+def parse_ping_test_result(r):
     is_windows = platform.system() == "Windows"
     tx_rx_pattern = "Packets: Sent = (\d+), Received = (\d+)," if is_windows \
         else "(\d+) .*transmitted, (\d+) .*received"
     latency_pattern = "Minimum = \d+ms, Maximum = \d+ms, Average = (\d+)ms" \
         if is_windows else "min/avg/max/.+ = [\d.]+/[\d.]+/([\d.]+)/[\d.]+ ms"
 
-    r = p.stdout.read().decode()
     try:
         transmitted_received = re.findall(tx_rx_pattern, r)
         transmitted, received = transmitted_received[0]
@@ -37,14 +36,15 @@ def parse_ping_test_result(p):
     return {"latency": float(latency), "packetLoss": packet_loss}
 
 
-def join_popen(ps):
-    ps = list(ps)
-    while True:
-        if any(map(lambda p: p.poll() is None, ps)):
-            time.sleep(0.1)
-        else:
-            break
-    return ps
+def test_ping_chunk(hosts, count):
+    results = [None] * len(hosts)
+    threads = [threading.Thread(target=ping_test, args=(h, count, results, i))
+               for i, h in enumerate(hosts)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    return results
 
 
 def bandwidth_test(url, timeout):
@@ -71,15 +71,12 @@ def server_name(s):
 
 def test_ping_all(servers, ping_count, ping_chunk):
     ping_result = []
-    ping_test_ = functools.partial(ping_test, count=ping_count)
     print("Start ping test:")
     for i in range(0, len(servers), ping_chunk):
         server_chunk = servers[i:i + ping_chunk]
         target = [s["ping"] for s in server_chunk]
         rs = list(map(parse_ping_test_result,
-                      join_popen(
-                          map(ping_test_,
-                              target))))
+                      test_ping_chunk(target, ping_count)))
         ping_result.extend(rs)
         for s, r in zip(server_chunk, rs):
             print(server_name(s),
