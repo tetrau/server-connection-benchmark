@@ -110,6 +110,34 @@ number of servers carefully, and make sure the duration of each batch less than
 the interval between each batch (`-e/--every EVERY`, the default value is 30
 minutes).
 
+### Use `scb` as Executable File
+On Linux or macOS, if `scb` file has the execute permission ( you can add execute
+permission by `chmod +x ./scb` ), try use `scb` like this:
+```
+./scb --version
+```
+
+### Resume From Preexist Report
+You can append the benchmark result to a preexist report file.
+```
+python3 scb --resume-from report.old.html -o report.html
+```
+
+### Export Data
+You can export test result as JSON from report file in HTML.
+```
+python3 scb --extract -i report.html -o report.json
+```
+Render JSON data back to HTML report.
+```
+python3 scb --render -i report.json -o report.html
+```
+You can use a single hyphen to represent stdout/stdin for -o/-i
+```
+cat report.html | python3 scb --extract -i - -o report.json
+python3 scb --render -i report.json -o - > report.html
+```
+
 ## Command Line Interface
 ```
 usage: scb [-h] [-o OUTPUT] [-s SERVERS] [-r RESUME_FROM]
