@@ -62,7 +62,7 @@ def bandwidth_test(url, timeout):
         p.kill()
         outs, errs = p.communicate()
     end = time.time()
-    return {"bandwidth": len(outs) / (end - start)}
+    return {"bandwidth": (8 * len(outs)) / (end - start)}
 
 
 def server_name(s):
@@ -89,7 +89,6 @@ def test_ping_all(servers, ping_count, ping_chunk):
 
 
 def format_bandwidth(b):
-    b = b * 8
     if b < 1024:
         return "{:.2f} bps".format(b)
     elif b < 1024 * 1024:

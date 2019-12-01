@@ -83,22 +83,22 @@ function groupBy(array, key) {
     return o;
 }
 
-function parseReport(report, accumulator) {
+function parseReport(report, aggregate) {
     let nameArray = report[0].result.map(x => x.vendor + ": " + x.location);
     let result = report.flatMap(s => {
         return s.result.map(x => { return { ...x, time: s.time } })
     })
     let groupedResult = groupBy(result, r => JSON.stringify([r.vendor, r.location, formatTime(r.time)]))
-    let accumulatedResult = Object.values(groupedResult).map(accumulator);
-    let timeArray = Array.from(new Set(accumulatedResult.map(r => formatTime(r.time)))).sort();
+    let aggregatedResult = Object.values(groupedResult).map(aggregate);
+    let timeArray = Array.from(new Set(aggregatedResult.map(r => formatTime(r.time)))).sort();
     return {
-        "result": accumulatedResult,
+        "result": aggregatedResult,
         "timeArray": timeArray,
         "nameArray": nameArray
     }
 }
 
-function accumulatorFactory(accu) {
+function aggregateFactory(accu) {
     return function (reports) {
         let time = reports[0].time;
         let vendor = reports[0].vendor;
@@ -113,7 +113,7 @@ function accumulatorFactory(accu) {
 function draw4DPlot(xDomain, yDomain, data, primaryDataSelector, secondaryDataSelector, xSelector, ySelector) {
     let scaleX = d3.scaleBand(xDomain, [0, 780])
         .paddingInner(0.1);
-    if (scaleX.bandwidth() > 20){
+    if (scaleX.bandwidth() > 20) {
         scaleX = scaleYFactory(20, 0.9, xDomain);
     }
     let scaleY = scaleYFactory(scaleX.bandwidth() * 2.25, 0.9, yDomain);
@@ -135,23 +135,15 @@ function normalizedSelector(dataArray, selector) {
     return f;
 }
 
-function invertedNormalizedSelector(dataArray, selector) {
-    let maxValue = maxInArray(dataArray, selector);
-    let scale = d3.scaleLinear().domain([maxValue, 0]);
-    let f = x => scale(selector(x))
-    f.scale = scale
-    return f
-}
-
 function draw(rData) {
     let config = getConfigFromControlPanel();
-    let accumulators = {
-        average: accumulatorFactory(d3.mean),
-        max: accumulatorFactory(d3.max),
-        min: accumulatorFactory(d3.min)
+    let aggregates = {
+        average: aggregateFactory(d3.mean),
+        max: aggregateFactory(d3.max),
+        min: aggregateFactory(d3.min)
     }
-    let accumulator = accumulators[config.accumulator]
-    let parsedData = parseReport(rData, accumulator);
+    let aggregate = aggregates[config.aggregate]
+    let parsedData = parseReport(rData, aggregate);
     let xDomain = parsedData.timeArray;
     let yDomain = parsedData.nameArray;
     let data = parsedData.result;
@@ -159,11 +151,9 @@ function draw(rData) {
     let latencySelector = normalizedSelector(data, x => x.latency);
     let packetLossSelector = x => x.packetLoss;
     packetLossSelector.scale = d3.scaleLinear();
-    let invertedLantencySelector = invertedNormalizedSelector(data, x => x.latency);
     let selectors = {
         bandwidth: bandwidthSelector,
         latency: latencySelector,
-        invertedLatency: invertedLantencySelector,
         packetLoss: packetLossSelector
     }
     let primaryDataSelector = selectors[config.primaryDataSelector];
@@ -171,19 +161,25 @@ function draw(rData) {
     let timeSelector = x => formatTime(x.time);
     let nameSelector = x => x.vendor + ": " + x.location
     let scale = secondaryDataSelector.scale;
-    drawLegendAxis(scale, 980, 50);
+    let tickFormats = {
+        bandwidth: (d) => (d3.format(".3~s")(d).toLowerCase() + "bps").replace(/([\d.]+)(\D*)/, "$1 $2"),
+        latency: (d) => d3.format("d")(d) + " ms",
+        packetLoss: d3.format(".0%")
+    }
+    let tickFormat = tickFormats[config.secondaryDataSelector];
+    drawLegendAxis(scale, 980, 50, tickFormat);
     draw4DPlot(xDomain, yDomain, data, primaryDataSelector, secondaryDataSelector, timeSelector, nameSelector)
 }
 
 function createControlPanel(drawPlot) {
-    let selectors = ["bandwidth", "latency", "invertedLatency", "packetLoss"];
+    let selectors = ["bandwidth", "latency", "packetLoss"];
     let controlPanel = d3.select("div#control-panel-1");
     function createInput(message, className, select, candidates) {
         let controlPanelDiv = controlPanel.append("div");
         controlPanelDiv.append("label")
-        .attr("for", className)
-        .text(message)
-        .style("font-family", "sans-serif");
+            .attr("for", className)
+            .text(message)
+            .style("font-family", "sans-serif");
         let controlPanelSelect = controlPanelDiv.append("select").attr("id", className);
         for (let s of candidates) {
             let i = controlPanelSelect.append("option")
@@ -201,15 +197,15 @@ function createControlPanel(drawPlot) {
     }
 
     createInput("Select Primary Value Field (Visualized by the Height of Bar): ", "primaryDataSelector", "bandwidth", selectors)
-    createInput("Select Secondary Value Field (Visualized by the Color of Bar): ", "secondaryDataSelector", "invertedLatency", selectors)
-    createInput("Select Accumulating Function: ", "accumulator", "average", ["average", "max", "min"])
+    createInput("Select Secondary Value Field (Visualized by the Color of Bar): ", "secondaryDataSelector", "latency", selectors)
+    createInput("Select Aggregate Function: ", "aggregate", "average", ["average", "max", "min"])
 }
 
 function getConfigFromControlPanel() {
     let primaryDataSelector = d3.select("option.primaryDataSelector:checked").property("value");
     let secondaryDataSelector = d3.select("option.secondaryDataSelector:checked").property("value");
-    let accumulator = d3.select("option.accumulator:checked").property("value");
-    return { primaryDataSelector, secondaryDataSelector, accumulator }
+    let aggregate = d3.select("option.aggregate:checked").property("value");
+    return { primaryDataSelector, secondaryDataSelector, aggregate }
 }
 
 function drawLegend(x, y, width, height) {
@@ -242,14 +238,15 @@ function drawLegend(x, y, width, height) {
         .style('fill', 'url(#gradient)');
 }
 
-function drawLegendAxis(scale, x, y) {
+function drawLegendAxis(scale, x, y, tickFormat) {
     scale = scale.copy().range([199, 0])
     d3.selectAll("g.legend-axis").remove()
     d3.select("svg")
         .append("g")
         .attr("class", "legend-axis")
         .attr("transform", `translate(${x}, ${y})`)
-        .call(d3.axisRight(scale))
+        .call(d3.axisRight(scale).tickFormat(tickFormat))
+
 }
 
 
