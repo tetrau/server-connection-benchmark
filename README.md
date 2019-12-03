@@ -10,7 +10,7 @@ for a server. But with so many VPS vendors and for each vendor there are so many
 datacenters in different regions. If you choose the wrong vendor and datacenter,
 especially if you have a bad network like me, you will have a very unpleasant
 experience. Like `Enter ~ .` every five minutes to kill the unresponsive ssh
-session. Or wait for a loooong time for scb to complete.
+session. Or wait for a loooong time for scp to complete.
 
 scb comes to rescue! scb can generate an easy-to-understand interactive
 visualized report of the network connection condition between you and the
@@ -88,11 +88,11 @@ Below is how one benchmark test batch is organized.
 +------------------------------------+-----------------------------------------------+ Bandwidth
 |         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.1                | tests
 +------------------------------------+-----------------------------------------------+ are
-|         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.3                | executed
+|         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.2                | executed
 +------------------------------------+-----------------------------------------------+ in
-|         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.4                | serial
+|         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.3                | serial
 +------------------------------------+-----------------------------------------------+ |
-|         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.5                | |
+|         <= DOWNLOAD_TIMEOUT        |               bandwidth_test.4                | |
 +------------------------------------+-----------------------------------------------+ +
 ```
 The estimated duration of each benchmark test batch can be calculated by the
